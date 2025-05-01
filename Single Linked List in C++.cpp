@@ -22,6 +22,7 @@ public:
     bool next(int &e);  
     int counter();
     void remove(const int&val);
+    void reverse();
     ~LinkedList();// Should be non-const reference to modify e
 };
 
@@ -183,6 +184,18 @@ LinkedList::~LinkedList(){
     
     return;
 }
+void LinkedList:: reverse() {
+        Node* prev = nullptr;
+        Node* curr = head;
+        while (curr) {
+            Node* nextTemp = curr->next;  // Store next node
+            curr->next = prev;            // Reverse link
+            prev = curr;                  // Move pointers forward
+            curr = nextTemp;
+        }
+        head = prev;  // Update head
+    }
+
 int main() {
     LinkedList list;
     
