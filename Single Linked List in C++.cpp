@@ -16,15 +16,17 @@ public:
     LinkedList();
     void insert(const int &e);
     void insert(int val, int e);
-    //void insert(int pos,int e);
+    void insertBEFORE(int i,int val);
      int findMiddleElement(LinkedList &A);
     bool first(int &e);       // Should be non-const reference to modify e
     bool next(int &e);  
     int counter();
     void remove(const int&val);
+    bool deleterAll(int i);
     void reverse();
-    int findSMAX();
     ~LinkedList();// Should be non-const reference to modify e
+    int findSMAX();
+    void Conc(LinkedList &A, LinkedList&B);
 };
 
 LinkedList::LinkedList() {
@@ -43,8 +45,52 @@ LinkedList::LinkedList() {
       return slow->val;
      
   }
-
+ bool LinkedList::deleterAll(int i) {
+    if (head == nullptr) return false;  // Empty list case
     
+    Node* current = head;
+    bool deletedAny = false;  // Track if we deleted anything
+    
+    // Need to handle head node separately
+    if (head->val == i) {
+        Node* temp = head;
+        head = head->next;
+        delete temp;
+        deletedAny = true;
+        current = head;  // Reset current after head changes
+    }
+
+    while (current != nullptr && current->next != nullptr) {
+        if (current->next->val == i) {
+            Node* temp = current->next;
+            current->next = temp->next;  // Fix: Correct pointer update
+            delete temp;
+            deletedAny = true;
+            // Don't advance current here as next node might also match
+        } else {
+            current = current->next;
+        }
+    }
+    
+    return deletedAny;  // Return whether we deleted anything
+}
+
+    int LinkedList::findSMAX(){
+        int max1=head->val;
+        int max2=-1;
+        Node*current=head;
+        while(current!=NULL){
+            if(current->val>max1){
+                max2=max1;
+                max1=current->val;
+            }
+            else if(current->val>max2&&current->val!=max1){
+                max2=current->val;
+            }
+            current=current->next;
+        }
+        return max2;
+    }
     
 void LinkedList::insert(int val, int e) {
     Node* newnode = new Node;
@@ -105,22 +151,6 @@ bool LinkedList::next(int &e) {
     e = current->val;  // Fixed: should be 'val' not 'elem'
     return true;
 }
-  int LinkedList::findSMAX(){
-        int max1=head->val;
-        int max2=-1;
-        Node*current=head;
-        while(current!=NULL){
-            if(current->val>max1){
-                max2=max1;
-                max1=current->val;
-            }
-            else if(current->val>max2&&current->val!=max1){
-                max2=current->val;
-            }
-            current=current->next;
-        }
-        return max2;
-    }
 int LinkedList::counter(){
     Node* current=head;
     int count=0;
@@ -130,6 +160,24 @@ int LinkedList::counter(){
     }
     return count+1;
     
+}
+void LinkedList::Conc(LinkedList &A, LinkedList&B){
+   if (A.head == nullptr) {
+        // If A is empty, assign B
+        this->head = B.head;
+        return;
+    }
+    this->head = A.head;
+
+    // Traverse to the end of A
+    Node* current = A.head;
+    while (current->next != nullptr) {
+        current = current->next;
+    }
+
+    // Link last node of A to head of B
+    current->next = B.head;
+   
 }
 /*void LinkedList::insert(int pos,int&e){
     Node*node=new Node;
@@ -169,6 +217,22 @@ void LinkedList::remove(const int &val) {  // Changed from delete (delete is a k
         Node* temp = current->next;
         current->next = temp->next;
         delete temp;
+    }
+    void LinkedList::insertBEFORE(int i,int val){
+        Node* node=new Node;
+        node->val=val;
+        if(head==NULL){
+            head->val=val;
+            head->next=nullptr;
+        }
+        Node*current=head;
+        int count=1;
+        while(current!=NULL&&count<i-1){
+            current=current->next;
+            count++;
+        }
+         node->next = current->next;
+    current->next = node;
     }
 
 /*void DoubleLinkedList::insert(const int &e){
@@ -215,17 +279,14 @@ void LinkedList:: reverse() {
 
 int main() {
     LinkedList list;
-    
+    LinkedList B;
     // Insert some values
     list.insert(10);
     list.insert(20);
     list.insert(30);
     list.insert(50);
-     list.insert(10,40);
-    list.insert(50);
-    list.insert(50);
-    list.remove(10);
-    list.insert(400);
+    list.insert(10,40);
+    cout<<"SMAX is"<<list.findSMAX()<<"\n";
     // Iterate through the list
     int value;
     if (list.first(value)) {
@@ -233,7 +294,23 @@ int main() {
             cout << value << " ";
         } while (list.next(value));
     }
-   cout<<list.findMiddleElement(list);
-    cout << list.counter()<<endl;
+    B.insert(4);
+    B.insert(34);
+    B.insert(34);
+    B.insert(4);
+    B.insert(4);
+    B.insert(4);
+    B.insert(4);
+    
+    B.insertBEFORE(1,21);
+    B.deleterAll(4);
+    B.reverse();
+     int t;
+    if (B.first(t)) {
+        do {
+            cout << t << " ";
+        } while (B.next(t));
+    }
     return 0;
 }
+
