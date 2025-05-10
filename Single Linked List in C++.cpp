@@ -23,6 +23,7 @@ public:
     int counter();
     void remove(const int&val);
     void reverse();
+    int findSMAX();
     ~LinkedList();// Should be non-const reference to modify e
 };
 
@@ -104,6 +105,22 @@ bool LinkedList::next(int &e) {
     e = current->val;  // Fixed: should be 'val' not 'elem'
     return true;
 }
+  int LinkedList::findSMAX(){
+        int max1=head->val;
+        int max2=-1;
+        Node*current=head;
+        while(current!=NULL){
+            if(current->val>max1){
+                max2=max1;
+                max1=current->val;
+            }
+            else if(current->val>max2&&current->val!=max1){
+                max2=current->val;
+            }
+            current=current->next;
+        }
+        return max2;
+    }
 int LinkedList::counter(){
     Node* current=head;
     int count=0;
