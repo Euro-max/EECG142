@@ -1,3 +1,9 @@
+struct Node {
+    int key;        
+    Node* next;     
+
+    Node(int k) : key(k), next(nullptr) {}  
+};
 class HashTable {
 private:
     Node* table[TABLE_SIZE];
